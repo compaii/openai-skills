@@ -94,10 +94,14 @@ pwcli tab-select 0
 pwcli console
 pwcli console warning
 pwcli network
-pwcli run-code "await page.waitForTimeout(1000)"
+pwcli run-code 'async (page) => { await page.waitForTimeout(1000); }'
 pwcli tracing-start
 pwcli tracing-stop
 ```
+
+`run-code` expects a JavaScript function invoked with `page`, not bare statements.
+For multiline code, save `async (page) => { ... }` to a file and use
+`pwcli run-code --filename=/absolute/path/check.js` to avoid shell quoting.
 
 ## Sessions
 
