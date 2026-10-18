@@ -93,3 +93,22 @@ Minimal example:
 - If an element ref fails, run `pwcli snapshot` again and retry.
 - If the page looks wrong, re-open with `--headed` and resize the window.
 - If a flow depends on prior state, use a named `--session`.
+
+
+## Headless WebRTC audio checks
+
+RTP packets and transcripts do not establish decoded audio. Verify the browser
+consumer first with a local peer-to-peer synthetic tone before calling a billed
+voice service. In an environment without a normal output device, an explicit
+silent sink can make the receive pipeline testable without physical playback:
+use an `AudioContext({sinkId: {type: "none"}})` where supported, start a muted
+`Audio` element with the received stream, and connect the analyser through a
+zero-gain node to that context destination. Check that playback/resume succeeds.
+
+Inspect waveform peaks, recorded bytes and emitted/received sample counts.
+`totalAudioEnergy` can remain zero while the decoded waveform and recording are
+valid; do not use that field alone as the pass condition. A local Chromium trial
+with this setup decoded a synthetic tone and recorded nonempty audio with no
+model calls or physical media. Preserve earlier service outcomes and complete
+only missing observations or distinct useful follow-ups; do not replay paid
+work to repair a verifier.
